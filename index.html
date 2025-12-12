@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VukaPro Resume Builder</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Refined Body background for warmth */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa; /* Slightly warmer off-white background */
+        }
+
+        /* Swati-Inspired Colors */
+        .swati-maroon-bg { background-color: #79122a; } /* Deep, rich red/maroon (Primary Action) */
+        .swati-maroon-hover-bg { background-color: #5c0e20; }
+        .swati-gold-text { color: #eeb111; } /* Vibrant gold/yellow accent (Highlight) */
+        .swati-maroon-text { color: #79122a; }
+        .swati-maroon-border { border-color: #79122a; }
+        /* Using a subtle dark blue for secondary context, inspired by the flag */
+        .swati-dark-blue-text { color: #1e3a8a; } 
+
+        /* A4 Paper Dimensions for Preview */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.2); /* Slightly deeper shadow for paper effect */
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Resume Specific Typography */
+        .resume-serif {
+            font-family: 'Merriweather', serif;
+        }
+
+        /* Form Styling */
+        .form-section {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.15s ease-in-out;
+        }
+
+        /* Consistent Focus Color and Box Shadow using Swati Maroon */
+        .input-field:focus {
+            outline: none;
+            border-color: #79122a;
+            box-shadow: 0 0 0 3px rgba(121, 18, 42, 0.2); /* Increased opacity for visibility */
+        }
+        
+        /* Visual Page Separator */
+        .page-break {
+            page-break-after: always;
+            margin: 40px 0; 
+            border-top: 2px dashed #a3a3a3; /* Darker dashed line */
+            width: 100%;
+        }
+        
+        /* Form Radio Button Color */
+        .form-radio.text-maroon:checked {
+            color: #79122a;
+            background-color: #79122a;
+            border-color: #79122a;
+        }
+
+        /* Print Specific Styles */
+        @media print {
+            @page {
+                margin: 0;
+                size: A4; 
+            }
+
+            body {
+                background: white;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-container {
+                display: block !important;
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .a4-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                min-height: 297mm;
+                height: 297mm; 
+            }
+            
+            .page-break {
+                page-break-after: always;
+                margin: 0;
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- Header / Navbar - Kept dark gray for strong contrast, but added Swati icon color -->
+    <header class="bg-gray-800 text-white h-16 flex items-center justify-between px-6 shrink-0 no-print z-10">
+        <div class="flex items-center gap-3">
+            <!-- Icon uses Swati Maroon BG -->
+            <div class="w-8 h-8 swati-maroon-bg rounded flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-rocket text-white"></i>
+            </div>
+            <h1 class="font-bold text-lg">VukaPro Resume Builder</h1>
+        </div>
+        <!-- Button uses Swati Maroon -->
+        <button onclick="window.print()" class="swati-maroon-bg swati-maroon-hover-bg text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow-md hover:shadow-lg">
+            <i class="fa-solid fa-download"></i> Save as PDF (2 Pages)
+        </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden">
+        
+        <!-- Left: Editor Panel - Changed to bg-white for cleaner look -->
+        <div class="w-full md:w-5/12 lg:w-4/12 bg-white border-r border-gray-200 overflow-y-auto no-print">
+            <div class="p-6 pb-20">
+                <h2 class="text-xl font-bold swati-maroon-text mb-6">Editor</h2>
+
+                <!-- Personal Info -->
+                <div class="form-section">
+                    <!-- Icon uses Swati Maroon Text -->
+                    <h3 class="font-bold text-gray-700 mb-4 border-b pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-user swati-maroon-text"></i> Personal Info
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label class="input-label">Full Name</label>
+                            <input type="text" class="input-field" id="input-name" placeholder="John Doe" oninput="updateResume()">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Job Title</label>
+                            <input type="text" class="input-field" id="input-title" placeholder="Software Engineer" oninput="updateResume()">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label class="input-label">Email</label>
+                            <input type="email" class="input-field" id="input-email" placeholder="john@example.com" oninput="updateResume()">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Phone</label>
+                            <input type="tel" class="input-field" id="input-phone" placeholder="+27 12 345 6789" oninput="updateResume()">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="input-group">
+                            <label class="input-label">Location</label>
+                            <input type="text" class="input-field" id="input-location" placeholder="City, Country (Crucial for remote jobs)" oninput="updateResume()">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">Website / LinkedIn</label>
+                            <input type="text" class="input-field" id="input-web" placeholder="linkedin.com/in/johndoe" oninput="updateResume()">
+                        </div>
+                    </div>
+                    
+                    <!-- AI Summary Generator Section -->
+                    <div class="input-group col-span-2 border-t pt-4 mt-4 border-gray-200">
+                        <!-- Icon uses Swati Gold Accent -->
+                        <h4 class="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-robot swati-gold-text"></i> AI Job Ad Input (For Summary & Letter)
+                        </h4>
+                        
+                        <label class="input-label">Job Advertisement (Image, PDF, or Text)</label>
+                        <input type="file" id="input-job-ad-file" accept=".pdf,image/*,.txt" class="input-field mb-2 p-1 bg-white cursor-pointer" onchange="document.getElementById('input-job-ad-text').value = '';">
+                        
+                        <textarea class="input-field h-16 resize-none mb-3" id="input-job-ad-text" placeholder="Or paste the job description text here..." oninput="document.getElementById('input-job-ad-file').value = '';"></textarea>
+                        
+                        <!-- Button uses Swati Maroon -->
+                        <button onclick="processFileAndGenerateSummary()" id="generate-summary-btn" class="w-full swati-maroon-bg swati-maroon-hover-bg text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm hover:shadow-md">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate CV Summary with AI
+                        </button>
+
+                        <div id="loading-spinner" class="mt-2 text-center text-sm swati-maroon-text hidden">
+                            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Analyzing job ad and generating summary...
+                        </div>
+                        <div id="error-message" class="mt-2 text-sm text-red-500 hidden"></div>
+                    </div>
+
+                    <div class="input-group col-span-2">
+                        <label class="input-label">Professional Summary (SA/Eswatini Focus)</label>
+                        <textarea class="input-field h-24 resize-none" id="input-summary" placeholder="Briefly describe your professional background..." oninput="updateResume()"></textarea>
+                    </div>
+                    
+                </div>
+                
+                <!-- Cover Letter -->
+                <div class="form-section">
+                    <!-- Icon uses Swati Gold Accent -->
+                    <h3 class="font-bold text-gray-700 mb-4 border-b pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-envelope-open-text swati-gold-text"></i> Cover Letter Generator (Page 1)
+                    </h3>
+                    
+                    <!-- New: Application Type -->
+                    <div class="input-group">
+                        <label class="input-label">Application Type</label>
+                        <div class="flex gap-4">
+                            <label class="inline-flex items-center">
+                                <!-- Radio button color set via custom class -->
+                                <input type="radio" class="form-radio text-maroon" name="application-type" value="Email" checked onchange="updateResume()">
+                                <span class="ml-2 text-sm text-gray-700">Email Sent</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <!-- Radio button color set via custom class -->
+                                <input type="radio" class="form-radio text-maroon" name="application-type" value="Hardcopy" onchange="updateResume()">
+                                <span class="ml-2 text-sm text-gray-700">Hardcopy Application</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="input-group col-span-2">
+                        <label class="input-label">Recipient Details (Address Block)</label>
+                        <textarea class="input-field h-12 resize-none" id="input-recipient-info" placeholder="[Date]\n[Hiring Manager Name] / HR Team\n[Company Name]\n[Company Address]" oninput="updateResume()"></textarea>
+                    </div>
+                    
+                    <div class="input-group col-span-2">
+                        <label class="input-label">Salutation (e.g., Dear Mr. Mkhize,)</label>
+                        <input type="text" class="input-field" id="input-salutation" placeholder="Dear Hiring Manager," oninput="updateResume()">
+                    </div>
+
+                    <!-- Button uses Swati Maroon -->
+                    <button onclick="generateCoverLetter()" id="generate-letter-btn" class="w-full swati-maroon-bg swati-maroon-hover-bg text-white px-4 py-2 rounded-lg font-medium transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm hover:shadow-md">
+                        <i class="fa-solid fa-feather-pointed"></i> Generate Cover Letter Body
+                    </button>
+                    <div id="loading-letter-spinner" class="mt-2 text-center text-sm swati-maroon-text hidden">
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Generating personalized cover letter...
+                    </div>
+                    <div id="error-letter-message" class="mt-2 text-sm text-red-500 hidden"></div>
+                    
+                    <div class="input-group col-span-2 mt-4">
+                        <label class="input-label">Cover Letter Content (AI will include the sign-off based on Type)</label>
+                        <textarea class="input-field h-52 resize-none" id="input-cover-letter" placeholder="[Paragraph 1]\n[Paragraph 2]\n[Paragraph 3]\n[Closing]" oninput="updateResume()"></textarea>
+                    </div>
+                </div>
+
+                <!-- Experience -->
+                <div class="form-section">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2">
+                        <!-- Icon uses Swati Maroon Text -->
+                        <h3 class="font-bold text-gray-700 flex items-center gap-2">
+                            <i class="fa-solid fa-briefcase swati-maroon-text"></i> Experience (Focus on Quantifiable Results!)
+                        </h3>
+                         <!-- Button uses a softer border for secondary action and Swati Dark Blue Text -->
+                        <button onclick="addExperience()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded border transition swati-dark-blue-text border-gray-300 hover:border-gray-400">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="experience-form-container" class="space-y-4">
+                        <!-- Dynamic Experience Items will go here -->
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="form-section">
+                    <div class="flex justify-between items-center mb-4 border-b pb-2">
+                        <!-- Icon uses Swati Maroon Text -->
+                        <h3 class="font-bold text-gray-700 flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap swati-maroon-text"></i> Education
+                        </h3>
+                         <!-- Button uses a softer border for secondary action and Swati Dark Blue Text -->
+                        <button onclick="addEducation()" class="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded border transition swati-dark-blue-text border-gray-300 hover:border-gray-400">
+                            <i class="fa-solid fa-plus"></i> Add
+                        </button>
+                    </div>
+                    <div id="education-form-container" class="space-y-4">
+                        <!-- Dynamic Education Items will go here -->
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-section">
+                    <!-- Icon uses Swati Maroon Text -->
+                    <h3 class="font-bold text-gray-700 mb-4 border-b pb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-wrench swati-maroon-text"></i> Skills
+                    </h3>
+                    <div class="input-group">
+                        <label class="input-label">Technical Skills (comma separated)</label>
+                        <textarea class="input-field h-20 resize-none" id="input-skills" placeholder="Technical Skills, Remote Tools (e.g., Jira, Zoom, Asana), Leadership" oninput="updateResume()"></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right: Preview Panel - Changed to bg-gray-100 for better separation from paper -->
+        <div class="flex-1 bg-gray-100 overflow-y-auto p-4 md:p-8 flex justify-center print-container">
+            <!-- Document Container (Cover Letter + Resume) -->
+            <div id="document-container" class="w-full h-full relative space-y-8">
+                
+                <!-- Page 1: Cover Letter -->
+                <div id="cover-letter-page" class="a4-page p-10 md:p-12 text-gray-800 leading-normal relative">
+                    <!-- Content injected by JS -->
+                </div>
+
+                <div class="page-break no-print"></div> <!-- Visual Page Separator -->
+
+                <!-- Page 2: Resume -->
+                <div id="resume-page" class="a4-page p-10 md:p-12 text-gray-800 leading-normal relative">
+                    
+                    <!-- Header -->
+                    <header class="border-b-2 swati-maroon-border pb-6 mb-6">
+                        <h1 id="preview-name" class="text-4xl font-bold uppercase tracking-wide text-gray-900 mb-2">Your Name</h1>
+                        <p id="preview-title" class="text-xl text-gray-600 font-medium mb-4">Professional Title</p>
+                        
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <!-- Contact Icons use Swati Maroon Text -->
+                            <div class="flex items-center gap-1" id="preview-email-container">
+                                <i class="fa-solid fa-envelope swati-maroon-text"></i>
+                                <span id="preview-email">email@example.com</span>
+                            </div>
+                            <div class="flex items-center gap-1" id="preview-phone-container">
+                                <i class="fa-solid fa-phone swati-maroon-text"></i>
+                                <span id="preview-phone">123-456-7890</span>
+                            </div>
+                            <div class="flex items-center gap-1" id="preview-location-container">
+                                <i class="fa-solid fa-location-dot swati-maroon-text"></i>
+                                <span id="preview-location">City, Country</span>
+                            </div>
+                            <div class="flex items-center gap-1" id="preview-web-container">
+                                <i class="fa-solid fa-link swati-maroon-text"></i>
+                                <span id="preview-web">linkedin.com/in/you</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- Summary -->
+                    <section class="mb-6" id="preview-summary-section">
+                        <!-- Section Headers use Swati Maroon Text -->
+                        <h2 class="text-sm font-bold uppercase tracking-widest swati-maroon-text mb-3 border-b border-gray-200 pb-1">Profile</h2>
+                        <p id="preview-summary" class="text-sm text-gray-700 leading-relaxed resume-serif">
+                            Experienced professional with a proven track record...
+                        </p>
+                    </section>
+
+                    <!-- Experience -->
+                    <section class="mb-6" id="preview-experience-section">
+                        <!-- Section Headers use Swati Maroon Text -->
+                        <h2 class="text-sm font-bold uppercase tracking-widest swati-maroon-text mb-4 border-b border-gray-200 pb-1">Experience</h2>
+                        <div id="preview-experience-list" class="space-y-4">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </section>
+
+                    <!-- Education -->
+                    <section class="mb-6" id="preview-education-section">
+                        <!-- Section Headers use Swati Maroon Text -->
+                        <h2 class="text-sm font-bold uppercase tracking-widest swati-maroon-text mb-4 border-b border-gray-200 pb-1">Education</h2>
+                        <div id="preview-education-list" class="space-y-4">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </section>
+
+                    <!-- Skills -->
+                    <section id="preview-skills-section">
+                        <!-- Section Headers use Swati Maroon Text -->
+                        <h2 class="text-sm font-bold uppercase tracking-widest swati-maroon-text mb-3 border-b border-gray-200 pb-1">Skills</h2>
+                        <div id="preview-skills" class="flex flex-wrap gap-2 text-sm text-gray-700">
+                            <!-- Dynamic Content -->
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Global State ---
+        let experienceData = [];
+        let educationData = [];
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`;
+        const API_KEY = ""; // Canvas will automatically provide the key at runtime
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add initial empty fields
+            addExperience(false);
+            addEducation(false);
+            
+            // Set some default text
+            document.getElementById('input-name').value = "Khaya Dlamini";
+            document.getElementById('input-title').value = "Senior Solutions Architect";
+            document.getElementById('input-email').value = "khaya.dlamini@techfirm.co.za";
+            document.getElementById('input-location').value = "Sandton, South Africa";
+            document.getElementById('input-phone').value = "+27 11 555 1234";
+            document.getElementById('input-web').value = "linkedin.com/in/khayad";
+            document.getElementById('input-summary').value = "Highly analytical and results-driven Solutions Architect with 8+ years of experience designing and deploying scalable enterprise systems across the finance and retail sectors in the SADC region. Proven ability to reduce cloud infrastructure costs by 30% while maintaining high availability. Expertise in Agile methodologies, cloud migration (AWS/Azure), and leading cross-functional technical teams.";
+            document.getElementById('input-recipient-info').value = "2025/12/11\nThe Hiring Manager\nGlobal Tech Solutions (Pty) Ltd\nJohannesburg, Gauteng";
+            document.getElementById('input-salutation').value = "Dear Hiring Manager,";
+            
+            // Default letter content is now just the body/paragraphs
+            document.getElementById('input-cover-letter').value = "I am writing to express my profound interest in the Senior Solutions Architect position, as advertised on [Platform]. With over eight years of delivering high-impact, scalable enterprise solutions across the SADC financial and retail landscape, I possess the proven technical proficiency and leadership required to exceed the expectations of this role.\n\nMy career is marked by tangible results, including a documented 30% reduction in cloud infrastructure costs while ensuring continuous system uptime. I am adept in leveraging AWS and Azure ecosystems, coupled with deep expertise in Python, Terraform, and modern CI/CD practices.\n\nI am eager to bring my cost-optimisation strategies and technical leadership to Global Tech Solutions. My full resume, detailing my professional journey, is attached for your review.\n\nSincerely,\nKhaya Dlamini";
+
+            updateResume();
+        });
+
+        // --- Core Update Function ---
+        function updateResume() {
+            // Personal Info
+            updateText('preview-name', 'input-name', 'Your Name');
+            updateText('preview-title', 'input-title', 'Professional Title');
+            updateText('preview-email', 'input-email', 'email@example.com');
+            updateText('preview-phone', 'input-phone', '');
+            updateText('preview-location', 'input-location', '');
+            updateText('preview-web', 'input-web', '');
+            updateText('preview-summary', 'input-summary', 'Professional summary goes here...');
+
+            // Toggle visibility of contact items if empty
+            toggleVisibility('preview-email-container', 'input-email');
+            toggleVisibility('preview-phone-container', 'input-phone');
+            toggleVisibility('preview-location-container', 'input-location');
+            toggleVisibility('preview-web-container', 'input-web');
+            toggleVisibility('preview-summary-section', 'input-summary');
+
+            // Skills
+            const skillsInput = document.getElementById('input-skills').value;
+            const skillsContainer = document.getElementById('preview-skills');
+            const skillsSection = document.getElementById('preview-skills-section');
+            
+            if (skillsInput.trim() === '') {
+                skillsSection.style.display = 'none';
+            } else {
+                skillsSection.style.display = 'block';
+                const skills = skillsInput.split(',').map(s => s.trim()).filter(s => s);
+                skillsContainer.innerHTML = skills.map(skill => 
+                    // Using a slightly darker/richer gray for skill tags
+                    `<span class="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-700">${skill}</span>`
+                ).join('');
+            }
+
+            // Experience Rendering
+            renderExperiencePreview();
+            
+            // Education Rendering
+            renderEducationPreview();
+            
+            // Cover Letter Rendering
+            const letterInput = document.getElementById('input-cover-letter').value;
+            const recipientInput = document.getElementById('input-recipient-info').value;
+            const salutationInput = document.getElementById('input-salutation').value;
+            const letterPage = document.getElementById('cover-letter-page');
+
+            if (letterInput.trim() === '') {
+                letterPage.style.display = 'none';
+                document.querySelector('.page-break').style.display = 'none';
+                document.getElementById('resume-page').classList.add('mt-0'); 
+            } else {
+                letterPage.style.display = 'block';
+                document.querySelector('.page-break').style.display = 'block';
+                document.getElementById('resume-page').classList.remove('mt-0');
+                
+                // Format recipient info (Date, Recipient, Company)
+                // Use innerHTML for recipient info to allow line breaks
+                const recipientHTML = recipientInput.split('\n').map(line => line.trim()).filter(line => line).map(line => `<div>${line}</div>`).join('');
+                
+                // Format letter body (paragraphs separated by double newline)
+                const letterLines = letterInput.trim().split('\n');
+                
+                // The AI is instructed to generate the four paragraphs including the final tailored closing and sign-off.
+                const letterBodyHTML = letterLines.map(p => p.trim()).filter(p => p).map(p => `<p class="mb-4">${p}</p>`).join('');
+
+                letterPage.innerHTML = `
+                    <div class="text-sm text-gray-600 mb-10 text-left whitespace-pre-line">
+                        ${recipientHTML}
+                    </div>
+                    
+                    <div class="text-sm text-gray-700 leading-relaxed resume-serif">
+                        <p class="mb-4 font-semibold">${salutationInput}</p>
+                        ${letterBodyHTML}
+                    </div>
+                `;
+            }
+        }
+
+        function renderExperiencePreview() {
+            const expContainer = document.getElementById('preview-experience-list');
+            const expSection = document.getElementById('preview-experience-section');
+            if (experienceData.length === 0) {
+                expSection.style.display = 'none';
+            } else {
+                expSection.style.display = 'block';
+                expContainer.innerHTML = experienceData.map(item => `
+                    <div class="mb-3">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-bold text-gray-800 text-sm">${item.role || 'Job Title'}</h3>
+                            <span class="text-xs text-gray-500 font-medium">${formatDateRange(item.start, item.end)}</span>
+                        </div>
+                        <!-- Company name uses the subtle Swati Dark Blue Text for distinction -->
+                        <div class="text-xs swati-dark-blue-text font-semibold mb-1">${item.company || 'Company Name'}</div>
+                        <p class="text-sm text-gray-700 resume-serif leading-relaxed whitespace-pre-line">${item.desc || ''}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderEducationPreview() {
+            const eduContainer = document.getElementById('preview-education-list');
+            const eduSection = document.getElementById('preview-education-section');
+            if (educationData.length === 0) {
+                eduSection.style.display = 'none';
+            } else {
+                eduSection.style.display = 'block';
+                eduContainer.innerHTML = educationData.map(item => `
+                    <div class="mb-3">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h3 class="font-bold text-gray-800 text-sm">${item.degree || 'Degree'}</h3>
+                            <span class="text-xs text-gray-500 font-medium">${formatDateRange(item.start, item.end)}</span>
+                        </div>
+                        <!-- School name uses the subtle Swati Dark Blue Text for distinction -->
+                        <div class="text-xs swati-dark-blue-text">${item.school || 'University'}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+
+        // --- Helper Functions ---
+
+        function updateText(previewId, inputId, defaultText) {
+            const el = document.getElementById(previewId);
+            const val = document.getElementById(inputId).value;
+            el.textContent = val || defaultText;
+        }
+
+        function toggleVisibility(containerId, inputId) {
+            const el = document.getElementById(containerId);
+            const val = document.getElementById(inputId).value;
+            el.style.display = val ? 'flex' : 'none';
+        }
+
+        function formatDateRange(start, end) {
+            if (!start) return '';
+            if (!end) return `${start} - Present`;
+            return `${start} - ${end}`;
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function getResumeDataSummary() {
+            const skills = document.getElementById('input-skills').value;
+            const experience = experienceData.map(item => 
+                `Role: ${item.role}, Company: ${item.company}, Period: ${item.start}-${item.end}, Description: ${item.desc}`
+            ).join('; ');
+            const education = educationData.map(item =>
+                `Degree: ${item.degree}, School: ${item.school}, Period: ${item.start}-${item.end}`
+            ).join('; ');
+
+            return {
+                skills,
+                experience,
+                education
+            };
+        }
+
+        async function exponentialBackoffFetch(url, options, maxRetries = 5, delay = 1000) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return response;
+                    if (response.status === 429 && i < maxRetries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2; // Exponential increase
+                        continue;
+                    }
+                    throw new Error(`API call failed with status: ${response.status}`);
+                } catch (error) {
+                    if (i === maxRetries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+        }
+        
+        // --- AI Summary Generation Logic ---
+
+        async function processFileAndGenerateSummary() {
+            const btn = document.getElementById('generate-summary-btn');
+            const spinner = document.getElementById('loading-spinner');
+            const errorBox = document.getElementById('error-message');
+            const summaryInput = document.getElementById('input-summary');
+
+            errorBox.classList.add('hidden');
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+
+            try {
+                const file = document.getElementById('input-job-ad-file').files[0];
+                const textAd = document.getElementById('input-job-ad-text').value.trim();
+                const currentResumeData = getResumeDataSummary();
+
+                if (!file && textAd === '') {
+                    throw new Error("Please upload a file or paste the job description text.");
+                }
+                
+                if (!currentResumeData.skills && currentResumeData.experience.length === 0) {
+                     throw new Error("Please fill out your Skills and Experience sections before generating a summary.");
+                }
+
+                let chatParts = [];
+                let systemInstruction = "You are an expert resume writer creating a professional summary for a candidate applying in South Africa or Eswatini. Based on the provided job description and the candidate's skills and experience, write a concise, compelling professional summary (4-5 sentences, maximum 80 words). The summary must be highly professional, formal, and results-oriented, explicitly highlighting quantifiable achievements and relevant skills that match the job advertisement, **including remote work competencies (e.g., self-management, digital collaboration)**. The summary must ONLY use information derived from the provided candidate data.";
+                
+                let userPrompt = "Candidate's Resume Data:\n" + 
+                                 `- Skills: ${currentResumeData.skills}\n` +
+                                 `- Experience: ${currentResumeData.experience}\n` +
+                                 `- Education: ${currentResumeData.education}\n\n`;
+
+
+                if (file) {
+                    const base64Data = await fileToBase64(file);
+                    const mimeType = file.type;
+
+                    if (mimeType.startsWith('image/') || mimeType === 'application/pdf') {
+                         chatParts.push({
+                            inlineData: {
+                                mimeType: mimeType,
+                                data: base64Data.split(',')[1] 
+                            }
+                        });
+                        userPrompt += "FIRST, extract the complete job description text from the attached file/image. SECOND, use the Candidate's Resume Data above to write the professional summary tailored for that extracted job description. Ensure the final summary is a single paragraph.";
+                    } else if (mimeType === 'text/plain' || mimeType === 'text/html') {
+                        userPrompt += "Job Description Text:\n" + atob(base64Data.split(',')[1]) + "\n\n";
+                        userPrompt += "NOW, use the Candidate's Resume Data above to write the professional summary tailored for this job description. Ensure the final summary is a single paragraph.";
+                    } else {
+                        throw new Error(`Unsupported file type: ${mimeType}. Please use image, PDF, or paste text.`);
+                    }
+
+                } else {
+                    userPrompt += "Job Description Text:\n" + textAd + "\n\n";
+                    userPrompt += "NOW, use the Candidate's Resume Data above to write the professional summary tailored for this job description. Ensure the final summary is a single paragraph.";
+                }
+
+                chatParts.push({ text: userPrompt });
+
+                const payload = {
+                    contents: [{ parts: chatParts }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                };
+
+                const response = await exponentialBackoffFetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (generatedText) {
+                    summaryInput.value = generatedText.trim();
+                    updateResume(); 
+                } else {
+                    throw new Error("AI failed to generate a summary. Response was empty or invalid.");
+                }
+
+            } catch (error) {
+                console.error("AI Generation Error:", error);
+                errorBox.textContent = `Error: ${error.message}`;
+                errorBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        }
+        
+        // --- AI Cover Letter Generation Logic ---
+
+        async function generateCoverLetter() {
+            const btn = document.getElementById('generate-letter-btn');
+            const spinner = document.getElementById('loading-letter-spinner');
+            const errorBox = document.getElementById('error-letter-message');
+            const letterInput = document.getElementById('input-cover-letter');
+            const jobAdFile = document.getElementById('input-job-ad-file').files[0];
+            const jobAdText = document.getElementById('input-job-ad-text').value.trim();
+            const name = document.getElementById('input-name').value.trim();
+            const title = document.getElementById('input-title').value.trim();
+            const appType = document.querySelector('input[name="application-type"]:checked').value; // Get the selected type
+            const salutation = document.getElementById('input-salutation').value.trim();
+
+            errorBox.classList.add('hidden');
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+
+            try {
+                if (!jobAdFile && jobAdText === '') {
+                    throw new Error("Please upload a file or paste the job description text in the AI Job Ad Input section to generate the letter.");
+                }
+                
+                if (!name || !title) {
+                    throw new Error("Please fill in your Full Name and Job Title first.");
+                }
+                
+                const currentResumeData = getResumeDataSummary();
+                let chatParts = [];
+                
+                let systemInstruction = `You are an expert cover letter writer for the South African/Eswatini market. Write a formal, concise, and highly persuasive cover letter tailored to the job description. The application type is set to **${appType}**. 
+                
+                The letter must be structured with 4 key paragraphs:
+                1. **Opening:** Express interest, state the role and where you saw the advert.
+                2. **Body (Metrics):** Directly link your top 2-3 most relevant and quantifiable achievements (from the provided experience data) to the job requirements. Use strong, formal language. **Ensure these achievements highlight results delivered in a remote/global context if applicable.**
+                3. **Body (Skills):** Highlight key skills (from the provided skills data) that align with the role. **Specifically mention or imply the candidate's proficiency in remote collaboration and self-management.**
+                4. **Closing & Sign-off:** Reiterate enthusiasm, mention the attached resume. **Tailor the sign-off based on the Application Type:**
+                    - If Hardcopy: Use 'Yours faithfully,' followed by four blank lines (for signature space), and then the candidate's full name.
+                    - If Email: Use 'Sincerely,' followed immediately by the candidate's full name on the next line (no signature space needed).
+                
+                Crucially, DO NOT include the date, recipient address block, or the salutation (e.g., 'Dear X,') in the generated content. Only generate the four paragraphs including the final tailored closing and sign-off.`;
+
+                let userPrompt = `Candidate Name: ${name}\nCandidate Title: ${title}\n\n`;
+                userPrompt += "Candidate's Resume Data:\n" + 
+                             `- Skills: ${currentResumeData.skills}\n` +
+                             `- Experience: ${currentResumeData.experience}\n` +
+                             `- Education: ${currentResumeData.education}\n\n`;
+
+                if (jobAdFile) {
+                    const base64Data = await fileToBase64(jobAdFile);
+                    const mimeType = jobAdFile.type;
+                    
+                    if (mimeType.startsWith('image/') || mimeType === 'application/pdf') {
+                         chatParts.push({
+                            inlineData: {
+                                mimeType: mimeType,
+                                data: base64Data.split(',')[1] 
+                            }
+                        });
+                        userPrompt += "FIRST, extract the complete job description text from the attached file/image. SECOND, use the Candidate's Resume Data above to write the professional cover letter body tailored for that extracted job description. Apply the appropriate closing style as instructed.";
+                    } else if (mimeType === 'text/plain' || mimeType === 'text/html') {
+                        userPrompt += "Job Description Text:\n" + atob(base64Data.split(',')[1]) + "\n\n";
+                        userPrompt += "NOW, use the Candidate's Resume Data above to write the professional cover letter body tailored for this job description. Apply the appropriate closing style as instructed.";
+                    } else {
+                        throw new Error(`Unsupported file type: ${mimeType}. Please use image, PDF, or paste text.`);
+                    }
+
+                } else {
+                    userPrompt += "Job Description Text:\n" + jobAdText + "\n\n";
+                    userPrompt += "NOW, use the Candidate's Resume Data above to write the professional cover letter body tailored for this job description. Apply the appropriate closing style as instructed.";
+                }
+
+                chatParts.push({ text: userPrompt });
+
+                const payload = {
+                    contents: [{ parts: chatParts }],
+                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                };
+
+                const response = await exponentialBackoffFetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text; 
+
+                if (generatedText) {
+                    // Clean up and set the generated body + sign-off
+                    letterInput.value = generatedText.trim().replace(/\n\s*\n/g, '\n\n');
+                    updateResume(); // Update the preview
+                } else {
+                    throw new Error("AI failed to generate a cover letter. Response was empty or invalid.");
+                }
+
+            } catch (error) {
+                console.error("AI Letter Generation Error:", error);
+                errorBox.textContent = `Error: ${error.message}`;
+                errorBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                spinner.classList.add('hidden');
+            }
+        }
+        
+        // --- Dynamic Section Logic ---
+
+        function addExperience(update = true) {
+            const id = Date.now();
+            experienceData.push({ id, role: 'Senior Developer', company: 'Tech Corp', start: '2020', end: 'Present', desc: '• Successfully managed a fully remote, cross-functional team of 4 engineers across 3 time zones, delivering three major features on schedule.\n• Reduced cloud infrastructure costs by 25% through optimizing resource allocation for a global product.\n• Implemented JIRA/Asana workflows that improved team collaboration and sprint velocity by 15% in a WFH environment.' });
+            renderExperienceForm();
+            if(update) updateResume();
+        }
+
+        function removeExperience(id) {
+            experienceData = experienceData.filter(item => item.id !== id);
+            renderExperienceForm();
+            updateResume();
+        }
+
+        function updateExperienceData(id, field, value) {
+            const item = experienceData.find(i => i.id === id);
+            if (item) item[field] = value;
+            updateResume();
+        }
+
+        function renderExperienceForm() {
+            const container = document.getElementById('experience-form-container');
+            container.innerHTML = experienceData.map(item => `
+                <div class="bg-gray-50 border border-gray-200 p-3 rounded relative group">
+                    <button onclick="removeExperience(${item.id})" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <input type="text" class="input-field text-sm" placeholder="Job Title" value="${item.role}" oninput="updateExperienceData(${item.id}, 'role', this.value)">
+                        <input type="text" class="input-field text-sm" placeholder="Company" value="${item.company}" oninput="updateExperienceData(${item.id}, 'company', this.value)">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <input type="text" class="input-field text-sm" placeholder="Start Year" value="${item.start}" oninput="updateExperienceData(${item.id}, 'start', this.value)">
+                        <input type="text" class="input-field text-sm" placeholder="End Year" value="${item.end}" oninput="updateExperienceData(${item.id}, 'end', this.value)">
+                    </div>
+                    <textarea class="input-field text-sm h-16 resize-none" 
+                        placeholder="Description (Focus on measurable achievements: e.g., • Increased sales by 30% or • Managed a R1M budget. Highlight REMOTE/GLOBAL impact!)" 
+                        oninput="updateExperienceData(${item.id}, 'desc', this.value)">${item.desc}</textarea>
+                </div>
+            `).join('');
+        }
+
+        function addEducation(update = true) {
+            const id = Date.now() + 1; 
+            educationData.push({ id, degree: 'BSc Computer Science', school: 'University of Tech', start: '2016', end: '2020' });
+            renderEducationForm();
+            if(update) updateResume();
+        }
+
+        function removeEducation(id) {
+            educationData = educationData.filter(item => item.id !== id);
+            renderEducationForm();
+            updateResume();
+        }
+
+        function updateEducationData(id, field, value) {
+            const item = educationData.find(i => i.id === id);
+            if (item) item[field] = value;
+            updateResume();
+        }
+
+        function renderEducationForm() {
+            const container = document.getElementById('education-form-container');
+            container.innerHTML = educationData.map(item => `
+                <div class="bg-gray-50 border border-gray-200 p-3 rounded relative group">
+                    <button onclick="removeEducation(${item.id})" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <div class="grid grid-cols-1 gap-2 mb-2">
+                        <input type="text" class="input-field text-sm" placeholder="Degree / Certificate" value="${item.degree}" oninput="updateEducationData(${item.id}, 'degree', this.value)">
+                        <input type="text" class="input-field text-sm" placeholder="School / University" value="${item.school}" oninput="updateEducationData(${item.id}, 'school', this.value)">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" class="input-field text-sm" placeholder="Start Year" value="${item.start}" oninput="updateEducationData(${item.id}, 'start', this.value)">
+                        <input type="text" class="input-field text-sm" placeholder="End Year" value="${item.end}" oninput="updateEducationData(${item.id}, 'end', this.value)">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    </script>
+</body>
+</html>
